@@ -58,6 +58,13 @@ public class LibraryServiceImpl implements LibraryService{
         return toResponse(updatedEntity);
     }
 
+    @Override
+    public void delete(Long id) {
+
+        libraryRepository.deleteById(id);
+
+    }
+
 
 
     //En esta parte del servicio, pasamos los datos del entity al dto

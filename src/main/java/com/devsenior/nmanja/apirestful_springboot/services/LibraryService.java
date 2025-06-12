@@ -13,5 +13,6 @@ public interface LibraryService{
     List<BookResponse> getAll(); //Trae todos los libres
     BookResponse create(BookRequest book); //Crea un libro
     BookResponse update(Long id, BookRequest book); //Actualiza un libro, buscandolo por id
+    void delete(Long id); //Elimina un libro buscado por id
     
 }

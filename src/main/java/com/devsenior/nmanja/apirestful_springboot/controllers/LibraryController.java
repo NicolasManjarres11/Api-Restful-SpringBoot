@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,6 +52,10 @@ public class LibraryController {
         return libraryService.update(id, book);
     }
     
+    @DeleteMapping("/{id}")
+    public void deleteBook (@PathVariable Long id){
+        libraryService.delete(id);
+    }
     
 
 
