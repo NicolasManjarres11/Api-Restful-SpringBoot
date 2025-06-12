@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.devsenior.nmanja.apirestful_springboot.exceptions.BookNotFound;
 import com.devsenior.nmanja.apirestful_springboot.models.dto.BookRequest;
 import com.devsenior.nmanja.apirestful_springboot.models.dto.BookResponse;
 import com.devsenior.nmanja.apirestful_springboot.models.entities.Book;
@@ -38,6 +39,23 @@ public class LibraryServiceImpl implements LibraryService{
         var newBook = libraryRepository.save(entity);  //en esta variable, procedemos a guardar la entidad con ayuda de la inyección del repositorio
 
         return toResponse(newBook); //para dar un response al cliente de que se guardaron los datos, convertimos la variable en tipoResponse
+    }
+
+    @Override
+    public BookResponse update(Long id, BookRequest book) {
+
+        var entityOptional = libraryRepository.findById(id);
+
+        if(!entityOptional.isPresent()){ //Si la entidad buscada por el id no está presente, lance la excepción
+            throw new BookNotFound(id);
+        }                                   //De lo contrario, pase a entidad el requeste enviado y actualice segun el id la informacion
+
+        var entity = toEntity(book);
+        entity.setId(entityOptional.get().getId());
+
+        var updatedEntity = libraryRepository.save(entity);
+        
+        return toResponse(updatedEntity);
     }
 
 
