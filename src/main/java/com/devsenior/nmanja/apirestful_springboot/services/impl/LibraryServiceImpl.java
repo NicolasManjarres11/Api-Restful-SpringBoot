@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+import com.devsenior.nmanja.apirestful_springboot.exceptions.BookAlreadyLentException;
 import com.devsenior.nmanja.apirestful_springboot.exceptions.BookNotFoundById;
 import com.devsenior.nmanja.apirestful_springboot.models.dto.BookRequest;
 import com.devsenior.nmanja.apirestful_springboot.models.dto.BookResponse;
@@ -101,6 +101,24 @@ public class LibraryServiceImpl implements LibraryService{
 
     }
 
+    //Servidio para prestar un libro
+
+    @Override
+    public BookResponse setLoan(Long id) {
+
+        var book = libraryRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundById(id));
+
+        if(book.getState().equals("PRESTADO")){
+            throw new BookAlreadyLentException(id);
+        }
+
+        book.setState("PRESTADO");
+        var updateBook = libraryRepository.save(book);
+
+        return toResponse(updateBook);
+        
+    }
 
 
     //En esta parte del servicio, pasamos los datos del entity al dto

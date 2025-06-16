@@ -16,5 +16,6 @@ public interface LibraryService{
     BookResponse update(Long id, BookRequest book); //Actualiza un libro, buscandolo por id
     void delete(Long id); //Elimina un libro buscado por id
     List<BookResponse> getBooksByTitleOrAuthor(String searchTerm);
+    BookResponse setLoan(Long id);
     
 }
