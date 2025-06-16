@@ -1,11 +1,13 @@
 package com.devsenior.nmanja.apirestful_springboot.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.devsenior.nmanja.apirestful_springboot.exceptions.BookNotFound;
+
+import com.devsenior.nmanja.apirestful_springboot.exceptions.BookNotFoundById;
 import com.devsenior.nmanja.apirestful_springboot.models.dto.BookRequest;
 import com.devsenior.nmanja.apirestful_springboot.models.dto.BookResponse;
 import com.devsenior.nmanja.apirestful_springboot.models.entities.Book;
@@ -22,6 +24,8 @@ public class LibraryServiceImpl implements LibraryService{
     @Autowired
     public final LibraryRepository libraryRepository;
 
+    //Servicio para obtener todos los libros utilizando los metodos inyectados por el repositorio
+
     @Override
     public List<BookResponse> getAll() {
         
@@ -30,6 +34,18 @@ public class LibraryServiceImpl implements LibraryService{
             .toList()
         ;
     }
+
+    //Servicio para obtener libro por Id
+
+    @Override
+    public BookResponse getBookById(Long id) {       
+
+        return libraryRepository.findById(id)
+                .map(this::toResponse)
+                .orElseThrow(() -> new BookNotFoundById(id));
+    }
+
+    //Servicio para crear un nuevo libro
 
     @Override
     public BookResponse create(BookRequest book) {
@@ -41,13 +57,15 @@ public class LibraryServiceImpl implements LibraryService{
         return toResponse(newBook); //para dar un response al cliente de que se guardaron los datos, convertimos la variable en tipoResponse
     }
 
+    //Servicio para actualizar un libro por id
+
     @Override
     public BookResponse update(Long id, BookRequest book) {
 
         var entityOptional = libraryRepository.findById(id);
 
         if(!entityOptional.isPresent()){ //Si la entidad buscada por el id no está presente, lance la excepción
-            throw new BookNotFound(id);
+            throw new BookNotFoundById(id);
         }                                   //De lo contrario, pase a entidad el requeste enviado y actualice segun el id la informacion
 
         var entity = toEntity(book);
@@ -58,10 +76,28 @@ public class LibraryServiceImpl implements LibraryService{
         return toResponse(updatedEntity);
     }
 
+    //Servicio para borrar un libro por id
+
     @Override
     public void delete(Long id) {
 
         libraryRepository.deleteById(id);
+
+    }
+
+    //Servicio para buscar un libro por titulo o autor
+
+    @Override
+    public List<BookResponse> getBooksByTitleOrAuthor(String searchTerm) {
+
+        if(searchTerm == null || searchTerm.trim().isEmpty()){
+            return new ArrayList<>();
+        }
+
+        return libraryRepository.searchBooks(searchTerm).stream()
+                .map(this::toResponse)
+                .toList();
+
 
     }
 
@@ -85,7 +121,7 @@ public class LibraryServiceImpl implements LibraryService{
         return response;
     }
 
-    //En esta parte del servicio, pasamos los datos del dto a entity
+    //En esta parte del servicio, pasamos los datos del dto al entity
 
     public Book toEntity(BookRequest book){
 

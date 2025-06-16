@@ -35,6 +35,19 @@ public class LibraryController {
         return libraryService.getAll();
     }
 
+    //Obtener libro por id
+
+    @GetMapping("{id}")
+    public BookResponse getBookById(@PathVariable Long id) {
+        return libraryService.getBookById(id);
+    }
+
+    @GetMapping("/buscar")
+    public List<BookResponse> getByTitleOrAuthor(
+        @RequestParam (required = false, defaultValue = "") String searchTerm) {
+        return libraryService.getBooksByTitleOrAuthor(searchTerm);
+    }
+
     //Agregar un libro
     @PostMapping
     public BookResponse createBook(
@@ -46,12 +59,14 @@ public class LibraryController {
         return libraryService.create(book);
     }
 
+    //Actualizar libro por id
     @PutMapping("/{id}")
     public BookResponse updateBook(@PathVariable Long id, @RequestBody BookRequest book) {
         
         return libraryService.update(id, book);
     }
     
+    //Borrar libro por id
     @DeleteMapping("/{id}")
     public void deleteBook (@PathVariable Long id){
         libraryService.delete(id);
