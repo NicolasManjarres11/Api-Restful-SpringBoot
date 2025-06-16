@@ -43,7 +43,7 @@ public class LibraryController {
     }
 
     //Obtener libro por id
-    @Operation(summary = "Buscar libro por titulo")
+    @Operation(summary = "Buscar libro por id")
     @ApiResponse(responseCode = "200", description = "Libro encontrado")
     @ApiResponse(responseCode = "404", description = "No se encontró libro")
     @GetMapping("{id}")
@@ -54,7 +54,7 @@ public class LibraryController {
     //Buscar un libro por nombre de autor o titulo
     @Operation(summary = "Buscar libros por título o autor")
     @ApiResponse(responseCode = "200", description = "Libros encontrados")
-    @ApiResponse(responseCode = "404", description = "No se encontraron libros")
+    @ApiResponse(responseCode = "404", description = "Libro no encontrado")
     @GetMapping("/buscar")
     public List<BookResponse> getByTitleOrAuthor(
         @Parameter(description = "Termino de busqueda (titulo o autor)")
@@ -62,6 +62,9 @@ public class LibraryController {
         return libraryService.getBooksByTitleOrAuthor(searchTerm);
     }
 
+    @ApiResponse(responseCode = "200", description = "Libro creado")
+    @ApiResponse(responseCode = "400", description = "Los datos ingresados no son válidos")
+    @Operation(summary = "Crear un libro nuevo")
     //Agregar un libro
     @PostMapping
     public BookResponse createBook(
@@ -73,6 +76,10 @@ public class LibraryController {
         return libraryService.create(book);
     }
 
+    @Operation(summary = "Prestar un libro buscado por id")
+    @ApiResponse(responseCode = "200", description = "Libro prestado")
+    @ApiResponse(responseCode = "500", description = "El libro ya está prestado")
+    @ApiResponse(responseCode = "404", description = "No se encontró el libro")
     //Prestar un libro
     @PostMapping("/{id}/prestar")
     public BookResponse loanBook(@PathVariable Long id) {
@@ -82,6 +89,10 @@ public class LibraryController {
     }
     
 
+    @Operation(summary = "Actualizar un libro por id")
+    @ApiResponse(responseCode = "200", description = "Libro actualizado")
+    @ApiResponse(responseCode = "404", description = "No se encontró libro")
+    @ApiResponse(responseCode = "400", description = "Los datos ingresados no son válidos")
     //Actualizar libro por id
     @PutMapping("/{id}")
     public BookResponse updateBook
@@ -91,7 +102,11 @@ public class LibraryController {
         
         return libraryService.update(id, book);
     }
-    
+
+
+    @Operation(summary = "Borrar un libro por id")
+    @ApiResponse(responseCode = "200", description = "Libro eliminado")
+    @ApiResponse(responseCode = "404", description = "No se encontró libro")
     //Borrar libro por id
     @DeleteMapping("/{id}")
     public void deleteBook (@PathVariable Long id){
