@@ -18,7 +18,7 @@ public class BookRequest {
     @NotNull
     private String author;
 
-    @Schema(description = "Código único del libro", example ="545-736-232")
+    @Schema(description = "Código ISBN del libro", example ="545-736-232")
     @NotNull
     private String isbn;
 
